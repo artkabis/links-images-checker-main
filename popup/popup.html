@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Link & Image Checker</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>
+        <img src="../images/icon32.png" class="extension-icon" alt="Extension Icon">
+        Link & Image Checker
+      </h1>
+      <div class="scan-info">
+        <span id="last-scan-info" class="last-scan-info" style="display: none;"></span>
+      </div>
+      <div class="tabs">
+        <button id="tab-all" class="tab-button active">Tous</button>
+        <button id="tab-links" class="tab-button">Liens</button>
+        <button id="tab-images" class="tab-button">Images</button>
+      </div>
+    </header>
+
+    <div class="filter-container">
+      <div class="filter-group">
+        <label for="filter-results">Filtrer:</label>
+        <select id="filter-results" class="filter-select" disabled>
+          <option value="all">Tous les statuts</option>
+          <option value="error">Erreurs</option>
+          <option value="warning">Avertissements</option>
+          <option value="success">Réussis</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label for="sort-results">Trier par:</label>
+        <select id="sort-results" class="filter-select" disabled>
+          <option value="status">Statut</option>
+          <option value="url">URL</option>
+          <option value="type">Type</option>
+        </select>
+      </div>
+
+      <div class="search-container">
+        <input type="text" id="search-results" class="search-input" placeholder="Rechercher..." disabled>
+        <button id="clear-search" class="clear-search" disabled>×</button>
+      </div>
+
+      <div class="expand-collapse-group">
+        <button id="expand-all" class="expand-collapse-button" disabled>Tout développer</button>
+        <button id="collapse-all" class="expand-collapse-button" disabled>Tout réduire</button>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button id="start-check" class="primary-button">
+        <span class="button-icon">▶</span> Vérifier la page
+      </button>
+      <button id="stop-check" class="secondary-button" disabled>
+        <span class="button-icon">■</span> Arrêter
+      </button>
+      
+      <div class="export-container">
+        <select id="export-format" class="export-format">
+          <option value="json">JSON</option>
+          <option value="csv">CSV</option>
+          <option value="html">HTML</option>
+        </select>
+        <button id="export-results" class="secondary-button" disabled>
+          <span class="button-icon">⤓</span> Exporter
+        </button>
+      </div>
+    </div>
+
+    <div class="progress-container" style="display: none;">
+      <div class="progress-info">
+        <div class="progress-text">
+          <span class="loading-spinner"></span>
+          <span id="progress-text">Analyse en cours...</span>
+        </div>
+        <span id="progress-stats">0/0</span>
+      </div>
+      <div class="progress-bar-container">
+        <div id="progress-bar" class="progress-bar"></div>
+      </div>
+    </div>
+
+    <div class="summary-container" style="display: none;">
+      <div class="summary-header">
+        <h2>Résumé</h2>
+      </div>
+      <div class="summary-stats">
+        <div class="stat-item total-box">
+          <span class="stat-label">Total</span>
+          <span id="total-count" class="stat-value">0</span>
+        </div>
+        <div class="stat-item success-box">
+          <span class="stat-label">Réussis</span>
+          <span id="success-count" class="stat-value success">0</span>
+        </div>
+        <div class="stat-item warning-box">
+          <span class="stat-label">Avertissements</span>
+          <span id="warning-count" class="stat-value warning">0</span>
+        </div>
+        <div class="stat-item error-box">
+          <span class="stat-label">Erreurs</span>
+          <span id="error-count" class="stat-value error">0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="results-container">
+      <div id="results-all" class="results-tab active">
+        <div class="no-results">Aucun résultat. Cliquez sur "Vérifier la page" pour commencer.</div>
+      </div>
+      <div id="results-links" class="results-tab">
+        <div class="no-results">Aucun lien vérifié.</div>
+      </div>
+      <div id="results-images" class="results-tab">
+        <div class="no-results">Aucune image vérifiée.</div>
+      </div>
+    </div>
+
+    <div class="legend-container">
+      <h3>Légende</h3>
+      <div class="legend-content">
+        <div class="legend-items">
+          <div class="legend-item">
+            <span class="result-type-badge type-mailto">Email</span>
+            <span class="legend-text">Lien email (mailto:)</span>
+          </div>
+          <div class="legend-item">
+            <span class="result-type-badge type-tel">Téléphone</span>
+            <span class="legend-text">Numéro de téléphone (tel:)</span>
+          </div>
+          <div class="legend-item">
+            <span class="result-type-badge type-javascript">JavaScript</span>
+            <span class="legend-text">Script JavaScript</span>
+          </div>
+          <div class="legend-item">
+            <span class="result-type-badge type-fragment">Fragment</span>
+            <span class="legend-text">Ancre de page (#id)</span>
+          </div>
+          <div class="legend-item">
+            <span class="result-type-badge type-facebook">Facebook</span>
+            <span class="legend-text">Lien Facebook (peut fonctionner malgré erreurs)</span>
+          </div>
+          <div class="legend-item">
+            <span class="result-type-badge type-instagram">Instagram</span>
+            <span class="legend-text">Lien Instagram</span>
+          </div>
+          <div class="legend-item">
+            <span class="result-type-badge type-twitter">Twitter/X</span>
+            <span class="legend-text">Lien Twitter/X</span>
+          </div>
+          <div class="legend-item">
+            <span class="result-type-badge type-linkedin">LinkedIn</span>
+            <span class="legend-text">Lien LinkedIn</span>
+          </div>
+          <div class="legend-item">
+            <span class="result-type-badge type-problematic">Site protégé</span>
+            <span class="legend-text">Site avec restrictions anti-scraping</span>
+          </div>
+          <div class="legend-item">
+            <span class="result-type-badge type-cors">CORS</span>
+            <span class="legend-text">Blocage par politique cross-origin</span>
+          </div>
+          <div class="legend-item">
+            <span class="result-type-badge type-data">Data URL</span>
+            <span class="legend-text">URL encodée en base64</span>
+          </div>
+          <div class="legend-item">
+            <span class="result-type-badge type-image">Image</span>
+            <span class="legend-text">Image (jpg, png, svg, etc.)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="options-container">
+      <h3>Options</h3>
+      <div class="options-content">
+        <div class="option-group">
+          <label for="concurrency">Requêtes simultanées:</label>
+          <input type="number" id="concurrency" min="1" max="10" value="5">
+        </div>
+        <div class="option-group">
+          <label for="timeout">Délai d'attente (ms):</label>
+          <input type="number" id="timeout" min="1000" max="30000" step="1000" value="10000">
+        </div>
+        <div class="option-group">
+          <label for="user-agent">User-Agent:</label>
+          <select id="user-agent">
+            <option value="default">Chrome (par défaut)</option>
+            <option value="chrome-desktop">Chrome Desktop</option>
+            <option value="firefox-desktop">Firefox Desktop</option>
+            <option value="safari-desktop">Safari Desktop</option>
+            <option value="edge-desktop">Edge Desktop</option>
+            <option value="chrome-mobile">Chrome Mobile</option>
+            <option value="safari-mobile">Safari Mobile</option>
+            <option value="googlebot">Googlebot</option>
+            <option value="curl">cURL</option>
+          </select>
+        </div>
+        <div class="option-group">
+          <div class="option-checkbox">
+            <input type="checkbox" id="check-images" checked>
+            <label for="check-images">Vérifier les images</label>
+          </div>
+        </div>
+        <div class="option-group">
+          <div class="option-checkbox">
+            <input type="checkbox" id="check-external" checked>
+            <label for="check-external">Vérifier les liens externes</label>
+          </div>
+        </div>
+        <div class="option-group">
+          <div class="option-checkbox">
+            <input type="checkbox" id="check-anchors">
+            <label for="check-anchors">Vérifier les ancres</label>
+          </div>
+        </div>
+        <div class="option-group">
+          <div class="option-checkbox">
+            <input type="checkbox" id="follow-redirects" checked>
+            <label for="follow-redirects">Suivre les redirections</label>
+          </div>
+        </div>
+        <div class="option-group">
+          <label for="max-redirects">Nombre max. de redirections:</label>
+          <input type="number" id="max-redirects" min="1" max="10" value="5">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js" type="module"></script>
+</body>
+</html>
