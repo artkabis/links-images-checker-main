@@ -559,6 +559,7 @@ export function determineResourceType(result) {
   if (url.includes('reddit.com')) return 'reddit';
   if (url.includes('tiktok.com')) return 'tiktok';
   if (url.includes('pinterest.com')) return 'pinterest';
+  if (url.includes('.youtube.com')) return '.youtube';
   
   // Autres cas spéciaux
   if (result.isCorsBlocked) return 'cors';

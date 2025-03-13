@@ -389,6 +389,10 @@ import {
         status = 'warning';
         statusMessage = 'Les liens Facebook peuvent être valides même s\'ils ne sont pas vérifiables';
       }
+      if ((url.includes('youtube.com') || url.includes('youtube.fr') )&& status === 'invalid') {
+        status = 'warning';
+        statusMessage = 'Les liens Youtube peuvent être valides même s\'ils ne sont pas vérifiables';
+      }
       
       // Gestion spéciale pour les domaines problématiques
       if (isProblematic) {

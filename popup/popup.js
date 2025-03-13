@@ -53,6 +53,7 @@ const maxRedirectsInput = document.getElementById('max-redirects');
 const tabButtons = document.querySelectorAll('.tab-button');
 const resultsTabs = document.querySelectorAll('.results-tab');
 
+
 // Initialisation
 document.addEventListener('DOMContentLoaded', async () => {
   // Obtenir l'onglet actif
@@ -1113,6 +1114,7 @@ function determineLinkType(result) {
   if (result.url.includes('instagram.com')) return 'instagram';
   if (result.url.includes('linkedin.com')) return 'linkedin';
   if (result.url.includes('twitter.com') || result.url.includes('x.com')) return 'twitter';
+  if (result.url.includes('youtube.com') || result.url.includes('youtube.fr')) return 'youtube';
   
   // Autres cas spéciaux
   if (result.isCorsBlocked) return 'cors';
@@ -1131,7 +1133,7 @@ function determineLinkType(result) {
  */
 function checkIfMightBeValid(result) {
   // Liens réseaux sociaux
-  if ((['facebook', 'instagram', 'linkedin', 'twitter'].some(platform => 
+  if ((['facebook', 'instagram', 'linkedin', 'twitter', 'youtube'].some(platform => 
         result.url.includes(`${platform}.com`))) && 
       ['invalid', 'error', 'clientError'].includes(result.status)) {
     return true;
@@ -1162,6 +1164,7 @@ function createTypeBadge(type) {
     'javascript': '<span class="result-type-badge type-javascript">JavaScript</span>',
     'fragment': '<span class="result-type-badge type-fragment">Fragment</span>',
     'facebook': '<span class="result-type-badge type-facebook">Facebook</span>',
+    'youtube': '<span class="result-type-badge type-youtube">Youtube</span>',
     'instagram': '<span class="result-type-badge type-instagram">Instagram</span>',
     'linkedin': '<span class="result-type-badge type-linkedin">LinkedIn</span>',
     'twitter': '<span class="result-type-badge type-twitter">Twitter</span>',
@@ -1186,6 +1189,7 @@ function getIconForLinkType(type) {
     'javascript': '📝',
     'fragment': '🔖',
     'facebook': '👤',
+    'youtube': '🎞️',
     'instagram': '📷',
     'linkedin': '💼',
     'twitter': '🐦',
@@ -1232,7 +1236,7 @@ function getStatusText(status, statusCode, linkType) {
   if (linkType === 'data') return 'Data';
   
   // Pour les sites problématiques
-  if (['facebook', 'instagram', 'linkedin', 'twitter'].includes(linkType) && 
+  if (['facebook', 'instagram', 'linkedin', 'twitter', 'youtube'].includes(linkType) && 
       ['invalid', 'error'].includes(status)) {
     return linkType.charAt(0).toUpperCase() + linkType.slice(1);
   }
