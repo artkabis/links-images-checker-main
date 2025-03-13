@@ -102,6 +102,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Configuration des écouteurs d'événements
   setupEventListeners();
+  setupThemeToggle();
 });
 
 function setupEventListeners() {
@@ -1414,4 +1415,54 @@ function restoreScrollPosition() {
       activeTab.scrollTop = lastScrollPosition;
     }, 0);
   }
+}
+// Fonction pour gérer le toggle de thème
+function setupThemeToggle() {
+  const lightThemeBtn = document.getElementById('light-theme');
+  const darkThemeBtn = document.getElementById('dark-theme');
+  
+  if (!lightThemeBtn || !darkThemeBtn) return;
+  
+  // Vérifier le thème actuel
+  function setActiveTheme(theme) {
+    // Mettre à jour l'attribut data-theme
+    document.documentElement.setAttribute('data-theme', theme);
+    
+    // Mettre à jour l'UI
+    if (theme === 'dark') {
+      lightThemeBtn.classList.remove('active');
+      darkThemeBtn.classList.add('active');
+    } else {
+      lightThemeBtn.classList.add('active');
+      darkThemeBtn.classList.remove('active');
+    }
+    
+    // Sauvegarder la préférence
+    chrome.storage.local.set({ theme: theme });
+  }
+  
+  // Initialiser en fonction des préférences sauvegardées
+  chrome.storage.local.get(['theme'], (data) => {
+    if (data.theme) {
+      setActiveTheme(data.theme);
+    } else {
+      // Par défaut, utiliser la préférence système
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setActiveTheme(prefersDark ? 'dark' : 'light');
+    }
+  });
+  
+  // Écouter les clics sur les boutons
+  lightThemeBtn.addEventListener('click', () => setActiveTheme('light'));
+  darkThemeBtn.addEventListener('click', () => setActiveTheme('dark'));
+  
+  // Écouter les changements de préférence système
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    chrome.storage.local.get(['theme'], (data) => {
+      // Ne réagir que si aucune préférence explicite n'est définie
+      if (!data.theme) {
+        setActiveTheme(e.matches ? 'dark' : 'light');
+      }
+    });
+  });
 }

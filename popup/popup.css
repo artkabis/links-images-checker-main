@@ -84,6 +84,7 @@ body {
 
 /* En-tête */
 header {
+  position: relative;
   margin-bottom: var(--spacing-lg);
 }
 
@@ -1018,4 +1019,130 @@ h1 .extension-icon {
   .special-info.problematic-info {
     background-color: rgba(234, 67, 53, 0.2);
   }
+}
+/* Toggle de thème */
+.theme-switch {
+  position: absolute;
+  top: 12px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.theme-switch-label {
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.theme-switch-label:hover {
+  background-color: var(--gray-100);
+}
+
+/* Classe active pour l'icône sélectionnée */
+.theme-switch-label.active {
+  color: var(--primary-color);
+  background-color: var(--gray-100);
+}
+
+/* Classes pour forcer un thème spécifique */
+html[data-theme="dark"] {
+  /* Toutes les variables du thème sombre */
+  --primary-color: #8ab4f8;
+  --primary-hover: #aecbfa;
+  --success-color: #81c995;
+  --warning-color: #fdd663;
+  --error-color: #f28b82;
+  --gray-50: #202124;
+  --gray-100: #282a2d;
+  --gray-200: #3c4043;
+  --gray-300: #5f6368;
+  --gray-400: #9aa0a6;
+  --gray-500: #bdc1c6;
+  --gray-600: #dadce0;
+  --gray-700: #e8eaed;
+  --gray-800: #f8f9fa;
+}
+
+/* Styles spécifiques pour le thème sombre */
+html[data-theme="dark"] body {
+  background-color: var(--gray-50);
+}
+
+html[data-theme="dark"] .container {
+  background-color: var(--gray-100);
+}
+
+html[data-theme="dark"] .stat-item, 
+html[data-theme="dark"] .results-container {
+  background-color: var(--gray-200);
+}
+
+html[data-theme="dark"] .progress-container,
+html[data-theme="dark"] .summary-container {
+  background-color: var(--gray-100);
+  border-color: var(--gray-300);
+}
+
+html[data-theme="dark"] .primary-button:disabled {
+  background-color: var(--gray-300);
+}
+
+html[data-theme="dark"] .secondary-button {
+  background-color: var(--gray-300);
+  color: var(--gray-700);
+}
+
+html[data-theme="dark"] .secondary-button:hover {
+  background-color: var(--gray-400);
+}
+
+html[data-theme="dark"] .result-item:hover {
+  background-color: var(--gray-200);
+}
+
+html[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: var(--gray-200);
+}
+
+html[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: var(--gray-300);
+}
+
+html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-400);
+}
+
+html[data-theme="dark"] .status-success {
+  background-color: rgba(15, 157, 88, 0.2);
+}
+
+html[data-theme="dark"] .status-warning {
+  background-color: rgba(249, 171, 0, 0.2);
+}
+
+html[data-theme="dark"] .status-error {
+  background-color: rgba(234, 67, 53, 0.2);
+}
+
+html[data-theme="dark"] .status-special {
+  background-color: rgba(26, 115, 232, 0.2);
+}
+
+html[data-theme="dark"] .special-info.cors-info {
+  background-color: rgba(249, 171, 0, 0.2);
+}
+
+html[data-theme="dark"] .special-info.problematic-info {
+  background-color: rgba(234, 67, 53, 0.2);
+}
+html[data-theme="dark"] .container select, html[data-theme="dark"] .container input{
+  background:#333
 }
