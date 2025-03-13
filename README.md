@@ -5,7 +5,7 @@
 
 Extension Chrome pour vérifier les liens brisés et les images manquantes sur une page web.
 
-![Screenshot](images/screenshot.png)
+![Screenshot](images/app-screen.JPG)
 
 ## 🌟 Caractéristiques
 
